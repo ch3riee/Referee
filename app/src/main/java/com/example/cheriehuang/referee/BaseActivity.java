@@ -1,42 +1,31 @@
 package com.example.cheriehuang.referee;
 
+/**
+ * Created by cheriehuang on 5/19/17.
+ */
+
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.Button;
-import android.view.View;
-import android.content.Intent;
+import android.view.MenuItem;
+import android.view.Menu;
+import android.widget.Toast;
 
-
-
-
-public class MainActivity extends BaseActivity {
-    private Toolbar mToolbar;
-
-    protected void onCreate(Bundle savedInstanceState) {
+public abstract class BaseActivity extends AppCompatActivity {
+    protected  void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Button btn = (Button)findViewById(R.id.baseball_button);
-
-        btn.setOnClickListener(new View.OnClickListener() {
-                                   @Override
-                                   public void onClick(View v) {
-                                       startActivity(new Intent(MainActivity.this, BaseballActivity.class));
-                                   }
-                               }
-
-                                   );
     }
-
-
-
-    /*private void initToolbar() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        //setTitle(getString(R.string.app_name));
-       // mToolbar.setTitleTextColor(android.graphics.Color.WHITE);
-        //these are to enable home back up functionality
-        //getSupportActionBar().setHomeButtonEnabled(true);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+        initToolbar();
+    }
+    private void initToolbar() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        assert myToolbar != null;
     }
 
     @Override
@@ -47,9 +36,12 @@ public class MainActivity extends BaseActivity {
                 new Toolbar.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+
                         return onOptionsItemSelected(item);
                     }
                 });
+
+
         return true;
     }
 
@@ -75,5 +67,6 @@ public class MainActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-*/
+
+
 }
