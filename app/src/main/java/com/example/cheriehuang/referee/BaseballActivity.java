@@ -5,7 +5,6 @@ package com.example.cheriehuang.referee;
  */
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -21,12 +20,15 @@ import java.util.HashMap;
 import android.widget.ProgressBar;
 import java.io.IOException;
 import java.io.File;
+import java.util.Date;
+import java.util.Locale;
+import java.text.SimpleDateFormat;
 
 
 public class BaseballActivity  extends BaseActivity{
     private ListView mylistview;
     private android.widget.ProgressBar progressBar;
-    private static String url = "https://www.mysportsfeeds.com/api/feed/pull/mlb/2017-regular/daily_game_schedule.json?fordate=20170427";
+    private static String url = "https://www.mysportsfeeds.com/api/feed/pull/mlb/2017-regular/daily_game_schedule.json?fordate=";
     ArrayList<HashMap<String, String>> gameList;
     Context thecontext;
 
@@ -49,10 +51,39 @@ public class BaseballActivity  extends BaseActivity{
     private class GetGameSchedule extends AsyncTask<Void, Void, Void>
     {
 
-        public boolean fileExistance(String fname){
-            File file = getBaseContext().getFileStreamPath(fname);
+        private SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd", Locale.US);
+
+        private File getFile(String fname)
+        {
+            return getBaseContext().getFileStreamPath(fname);
+
+        }
+
+        private boolean fileExistance(String fname){
+            File file = getFile(fname);
             return file.exists();
         }
+
+        private Date fileLastModified(String fname)
+        {
+            //if the file exists check the last modified date
+            File file = getFile(fname);
+            Date lastModified = null;
+            if (file.exists())
+            {
+                lastModified = new Date(file.lastModified());
+            }
+            return lastModified;
+        }
+
+        private Boolean compareDates()
+        {
+            //new Date() gives us today's date
+            return fmt.format(new Date()).equals(fmt.format(fileLastModified("gameList")));
+        }
+
+
+
         //invoked on the UI thread before the task is executed. Used to setup the task
         //such as setting up the progress bar
         @Override
@@ -66,27 +97,27 @@ public class BaseballActivity  extends BaseActivity{
         // This step is used to perform background computation that can take a long time
         @Override
         protected Void doInBackground(Void... arg0) {
-            if (fileExistance("gameList") != false)
+            if (fileExistance("gameList") && compareDates())
             {
-                //the file exists already, just load from internal storage
-                InternalStorage is = new InternalStorage();
-                try{
-                    gameList =  is.readObject(thecontext,"gameList");
-                }
-                catch(IOException e)
-                {
-                    e.printStackTrace();
-                }
-                catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                //the file exists already and is updated, just load from internal storage
+                    try {
+                        gameList = InternalStorage.readObject(thecontext, "gameList");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
             }
+            //file exists but the flag is false or if file does not exist
             else {
+
+                //will automatically overwrite the file if it is old or does not exist
                 //first create instance of handler from class we just made to connect to URL
                 HttpHandler myhp = new HttpHandler();
-
+                String todayurl = url + fmt.format(new Date());
                 // Making a request to url and getting response, calling function in HttpHandler class that we wrote
-                String jsonStr = myhp.makeServiceCall(url);
+                String jsonStr = myhp.makeServiceCall(todayurl);
                 //if we actually grabbed something back as a string
                 if (jsonStr != null) {
                     try {
@@ -125,9 +156,8 @@ public class BaseballActivity  extends BaseActivity{
                             // adding game to the game list
                             gameList.add(game);
                             //saving the list in internal android storage
-                            InternalStorage is = new InternalStorage();
                             try {
-                                is.writeObject(thecontext, "gameList", gameList);
+                                InternalStorage.writeObject(thecontext, "gameList", gameList);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -170,10 +200,8 @@ public class BaseballActivity  extends BaseActivity{
             super.onPostExecute(result);
             // Dismiss the progress dialog
             if (progressBar != null)
-                progressBar.setVisibility(progressBar.INVISIBLE);
-            /**
-             * Updating parsed JSON data into ListView
-             * */
+                progressBar.setVisibility(android.widget.ProgressBar.INVISIBLE);
+             // Updating parsed JSON data into ListView
             ListAdapter adapter = new SimpleAdapter(
                    BaseballActivity.this, gameList,
                     R.layout.list_item, new String[]{"thename", "thetime"}, new int[]{R.id.game_name,
