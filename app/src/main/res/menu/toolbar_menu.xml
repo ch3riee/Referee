@@ -33,8 +33,15 @@
         android:icon="@drawable/ic_action_settings"
         app:showAsAction="ifRoom"
         android:title="Settings">
-
     </item>
+        <item
+            android:id="@+id/signout"
+            android:icon="@drawable/ic_action_signout"
+            app:showAsAction="ifRoom"
+            android:title="SignOut">
+
+        </item>
+
         </menu>
     </item>
 </menu>

@@ -10,11 +10,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.Menu;
 import android.widget.Toast;
+import android.content.Intent;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public abstract class BaseActivity extends AppCompatActivity {
+    private FirebaseAuth mAuth;
     protected  void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
     }
     @Override
     public void setContentView(int layoutResID) {
@@ -45,12 +50,20 @@ public abstract class BaseActivity extends AppCompatActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.home_button:
                 //just testing our buttons with Toast for now
                 Toast.makeText(this, "Home button selected", Toast.LENGTH_SHORT).show();
+                //now adding in the code to return to main activity
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                //if the activity being launched is already running in the current task, then instead
+                //of launching new instance of activity, all other activities on top of it will be closed
+                //and intent will be delivered to the now top main activity.
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 return true;
 
             case R.id.notifications:
@@ -61,6 +74,14 @@ public abstract class BaseActivity extends AppCompatActivity {
                 return true;
             case R.id.settings:
                 Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.signout:
+                Toast.makeText(this, "Signout selected", Toast.LENGTH_SHORT).show();
+                mAuth.signOut();
+                //now bring them back to the login page
+                Intent intent2 = new Intent(this, LoginActivity.class);
+                intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent2);
                 return true;
             default:
                 break;
