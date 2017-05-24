@@ -69,8 +69,10 @@ public abstract class BaseActivity extends AppCompatActivity {
             case R.id.notifications:
                 Toast.makeText(this, "Notifications selected", Toast.LENGTH_SHORT).show();
                 return true;
-            case R.id.profile:
-                Toast.makeText(this, "Profile selected", Toast.LENGTH_SHORT).show();
+            case R.id.friends:
+                Toast.makeText(this, "Friends selected", Toast.LENGTH_SHORT).show();
+                Intent intent3 = new Intent(this, FriendActivity.class);
+                startActivity(intent3);
                 return true;
             case R.id.settings:
                 Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show();

@@ -19,6 +19,7 @@
         <activity android:name=".LoginActivity" android:theme="@style/AppTheme.Dark" />
         <activity android:name=".SignupActivity" android:theme="@style/AppTheme.Dark" />
         <activity android:name=".UsernameActivity" android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".FriendActivity"/>
 
         <activity
             android:name=".BaseballActivity"
