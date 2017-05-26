@@ -7,71 +7,77 @@
     android:layout_height="match_parent"
     tools:context="com.example.cheriehuang.referee.MainActivity">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/rootLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="56dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
-
-        <android.support.v4.widget.NestedScrollView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-
-            android:layout_width="fill_parent"
-            android:id = "@+id/scrollview"
-            android:layout_height="fill_parent"
-            android:layout_gravity="fill_vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:fillViewport="true"
-            tools:layout_editor_absoluteY="-151dp"
-            tools:layout_editor_absoluteX="16dp">
-
-            <LinearLayout
-                android:orientation="vertical"
+            <!-- Request Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="56dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp">
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp">
 
-                <ImageView android:src="@drawable/logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="72dp"
-                    android:layout_marginBottom="24dp"
-                    android:layout_gravity="center_horizontal" />
-
-                <!-- Request Label -->
-                <android.support.design.widget.TextInputLayout
+                <EditText
+                    android:id="@+id/input_friendusername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp">
-                    <EditText android:id="@+id/input_friendusername"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textVisiblePassword|textNoSuggestions"
-                        android:hint="Friend's Username"/>
-                </android.support.design.widget.TextInputLayout>
+                    android:hint="Friend's Username"
+                    android:inputType="textVisiblePassword|textNoSuggestions" />
+            </android.support.design.widget.TextInputLayout>
 
-                <!-- Send Request Button -->
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btn_sendrequest"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
-                    android:padding="12dp"
-                    android:text="Send Friend Request"/>
+            <!-- Send Request Button -->
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_sendrequest"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="14dp"
+                android:padding="12dp"
+                android:text="Send Friend Request" />
+            
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Incoming Friend Requests"
+                android:gravity="center"/>
+
+            <ListView
+                android:id="@+id/requests_list"
+                android:layout_width="match_parent"
+                android:layout_height="190dp"
 
 
-            </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
+                />
 
-        <include layout="@layout/toolbar"/>
-    </android.support.design.widget.CoordinatorLayout>
+            <!--<TextView
+                android:id="@android:id/empty"
+                android:text="Currently No Pending Requests"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:visibility="gone"
+                />-->
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_acceptRequest"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="10dp"
+                android:padding="12dp"
+                android:text="Accept Selected Friend Requests"
+                />
+        </LinearLayout>
+
+
+
+        <include layout="@layout/toolbar" />
+
 </FrameLayout>
 

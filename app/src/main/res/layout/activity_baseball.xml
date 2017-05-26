@@ -12,20 +12,41 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <android.widget.ProgressBar
-            android:indeterminate="true"
             android:id="@+id/progress2"
-            android:visibility="invisible"
+            style="@android:style/Widget.ProgressBar.Inverse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="visible"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>/>
 
         <ListView
             android:id="@+id/baseball_list"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-        <include layout="@layout/toolbar"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/saveGamesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_fab_visibility"
+            app:fabSize="normal"
+            app:layout_anchor="@id/baseball_list"
+            app:layout_anchorGravity="bottom|right|end"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        <include layout="@layout/toolbar" />
+
+
     </android.support.design.widget.CoordinatorLayout>
+
+
 </FrameLayout>
 

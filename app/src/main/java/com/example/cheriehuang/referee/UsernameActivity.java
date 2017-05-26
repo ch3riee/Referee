@@ -3,6 +3,7 @@ package com.example.cheriehuang.referee;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,8 +15,11 @@ import java.util.Calendar;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Transaction;
@@ -33,6 +37,7 @@ import butterknife.ButterKnife;
 public class UsernameActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private static final String TAG = "UsernameActivity";
 
     @BindView(R.id.input_username) EditText _usernameText;
     @BindView(R.id.btn_username) Button _usernameButton;
@@ -94,6 +99,20 @@ public class UsernameActivity extends AppCompatActivity {
                         Log.w("AUTH", "username saved");
                         Toast.makeText(getBaseContext(), "User created successfully!", Toast.LENGTH_LONG).show();
                         setResult(RESULT_OK, null);
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(username)
+                                .build();
+                        user.updateProfile(profileUpdates)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d(TAG, "User profile updated.");
+
+                                        }
+                                    }
+                                });
                         finish();
                     } else {
                         Log.w("AUTH", "username exists");
