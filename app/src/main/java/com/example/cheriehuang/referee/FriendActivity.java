@@ -4,27 +4,21 @@ package com.example.cheriehuang.referee;
  * Created by cheriehuang on 5/23/17.
  */
 
-        import android.app.ProgressDialog;
-        import android.content.Context;
-        import android.graphics.Color;
-        import android.os.AsyncTask;
-        import android.os.Bundle;
-        import android.support.v7.app.AppCompatActivity;
-        import android.support.v7.widget.Toolbar;
+
+import android.content.Context;
+
+import android.os.AsyncTask;
+import android.os.Bundle;
         import android.util.SparseBooleanArray;
         import android.view.MotionEvent;
         import android.view.View;
         import android.view.inputmethod.InputMethodManager;
-        import android.widget.Button;
         import android.widget.EditText;
         import android.util.Log;
 
         import java.util.ArrayList;
-        import java.util.Calendar;
         import java.util.HashMap;
 
-        import android.content.Intent;
-        import android.widget.ListAdapter;
         import android.widget.ArrayAdapter;
         import android.widget.ListView;
         import android.widget.Toast;
@@ -102,65 +96,17 @@ public class FriendActivity extends BaseActivity {
                     }
 
                 AcceptFriendsHelper();
-                //Toast.makeText(FriendActivity.this, selected, Toast.LENGTH_LONG).show();
-                //new AcceptRequests().execute();
-                //now we can delete the request*/
-                //mDatabase.child("friendships").child(mAuth.getCurrentUser().getUid()).child("finley").setValue(true);
-                //mDatabase.child("friendships").child(frienduid).child(myusername).setValue(true);
-                //now remove the requests from their sent requests
-                //mDatabase.child("sentRequests").child(frienduid).child(myusername).removeValue();
-                //and my received requests
-                //mDatabase.child("receivedRequests").child(mAuth.getCurrentUser().getUid()).child("finley").removeValue();
-
-            }
-        });
-    }
-
-   /* private class Grab extends AsyncTask<Void, Void, Void>
-    {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        // invoked on the background thread immediately after onPreExecute() finishes executing.
-        // This step is used to perform background computation that can take a long time
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            grabUsername( mAuth.getCurrentUser().getUid());
-            return null;
-        }
-
-        // invoked on the UI thread after the background computation finishes.
-        // The result of the background computation is passed to this step as a parameter.
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            //call second half
-            AcceptFriendsHelper();
-
-        }
-    }*/
-
-
-    public void grabFriendID(String username) {
-
-        // for (String username : acceptedNames) {
-        mDatabase.child("usernames").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    // use "username" already exists so we can continue with sending the request
-                    String myuser = dataSnapshot.getValue(String.class);
-                    friendids.add(myuser);
+                //now update the list view
+                ArrayAdapter<String> myAdapter = (ArrayAdapter<String>) mylistview.getAdapter();
+                for (int x = 0; x < acceptedUsernames.size();x++)
+                {
+                    String temp = acceptedUsernames.get(x);
+                    friendrequestList.remove(temp);
                 }
-            }
+                mylistview.invalidateViews();
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
             }
         });
-        //}
     }
 
     public void AcceptFriendsHelper() {
@@ -169,7 +115,6 @@ public class FriendActivity extends BaseActivity {
             String tempusername = acceptedUsernames.get(i);
             String tempuid = friendids.get(i);
             AcceptFriends(tempusername, tempuid);
-            //grabFriendID(tempusername);
         }
 
     }
@@ -206,7 +151,47 @@ public class FriendActivity extends BaseActivity {
         listView.setItemChecked(position, true);
     }
 
+    public void checkIfFriends(final String friendid, final String friendusername) {
+        mDatabase.child("friendships").child(mAuth.getCurrentUser().getUid()).child(friendusername).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                   //already friends!
+                    Toast.makeText(getBaseContext(), friendusername + " is already your friend", Toast.LENGTH_LONG ).show();
+                } else {
+                    // not currently friends yet
+                    //sendCheckRequests(friendid, friendusername);
+                    checkOutstandingRequests(friendid, friendusername);
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void checkOutstandingRequests(final String friendid, final String friendusername)
+    {
+        mDatabase.child("receivedRequests").child(mAuth.getCurrentUser().getUid()).child(friendusername).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    //already friends!
+                    Toast.makeText(getBaseContext(), "Please accept " + friendusername + "'s friend request ", Toast.LENGTH_LONG ).show();
+                } else {
+                    // all checks check out
+                    sendCheckRequests(friendid, friendusername);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+    }
 
 
     public void sendCheckRequests(final String friendid, final String frienduser) {
@@ -251,7 +236,7 @@ public class FriendActivity extends BaseActivity {
                 if (dataSnapshot.exists()) {
                     // use "username" already exists so we can continue with sending the request
                     String fuid = dataSnapshot.getValue(String.class);
-                    sendCheckRequests(fuid, friendusername); //check to see if a request has already been sent so no duplicates
+                    checkIfFriends(fuid, friendusername); //check to see if a request has already been sent so no duplicates
 
                 } else {
                     // User does not exist. NOW call createUserWithEmailAndPassword
@@ -288,103 +273,6 @@ public class FriendActivity extends BaseActivity {
         });
     }
 
-   /* private class AcceptRequests extends AsyncTask<Void, Void, Void>
-    {
-
-        public void grabFriendID(String username) {
-
-           // for (String username : acceptedNames) {
-                mDatabase.child("usernames").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            // use "username" already exists so we can continue with sending the request
-                            String myuser = dataSnapshot.getValue(String.class);
-                            friendids.add(myuser);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-            //}
-        }
-
-        public void createFriendships() {
-            //accepted_users
-            final String uid = mAuth.getCurrentUser().getUid();
-            if (myusername == null) {
-                grabUsername(uid);
-
-
-            }
-
-            grabFriendID(acceptedUsernames);
-            for (int i = 0; i < acceptedUsernames.size() && i < friendids.size(); i++) {
-                final String tempusername = friendids.get(i);
-                final String tempuid = acceptedUsernames.get(i);
-
-                //checking the ones that we have sent. Meaning UID is the one who is sending for toRequests
-                mDatabase.child("friendships").child(uid).child(tempusername).runTransaction(new Transaction.Handler() {
-                    @Override
-                    public Transaction.Result doTransaction(MutableData mutableData) {
-                        if (mutableData.getValue() == null) {
-                            mutableData.setValue(true);
-                            return Transaction.success(mutableData);
-                        }
-
-                        return Transaction.abort();
-                    }
-
-                    @Override
-                    public void onComplete(DatabaseError firebaseError, boolean committed, DataSnapshot dataSnapshot) {
-                        if (committed) {
-                            mDatabase.child("friendships").child(tempuid).child(myusername).setValue(true);
-
-                        } else {
-                            //issues
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Error while accepting requests",
-                                            Toast.LENGTH_LONG)
-                                            .show();
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        }
-
-        //invoked on the UI thread before the task is executed. Used to setup the task
-        //such as setting up the progress bar
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        // invoked on the background thread immediately after onPreExecute() finishes executing.
-        // This step is used to perform background computation that can take a long time
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            grabFriendID(acceptedUsernames);
-            return null;
-        }
-
-        // invoked on the UI thread after the background computation finishes.
-        // The result of the background computation is passed to this step as a parameter.
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            //call second half
-            PrintList();
-
-        }
-
-        }*/
 
 
    //the class for async task calling the url to get json
