@@ -1,16 +1,23 @@
 package com.example.cheriehuang.referee;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.Button;
 import android.view.View;
 import android.content.Intent;
 
+import java.util.Calendar;
+import android.content.SharedPreferences;
 
 
 
 public class MainActivity extends BaseActivity {
     private Toolbar mToolbar;
+    private Boolean myflag = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +32,23 @@ public class MainActivity extends BaseActivity {
                                }
 
                                    );
+
+
+           /* Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 23); // For 1 PM or 2 PM, 22 is 10pm
+            calendar.set(Calendar.MINUTE, 36);
+            calendar.set(Calendar.SECOND, 0);
+            if(Calendar.getInstance().after(calendar)){
+                // Move to tomorrow
+                calendar.add(Calendar.DATE, 1);
+            }
+            PendingIntent pi = PendingIntent.getBroadcast(this, 0,
+                    new Intent(this, AlarmReceiver.class),PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, pi);
+            Log.d("Main Activity", "Alarm has been set");*/
+
     }
 
 

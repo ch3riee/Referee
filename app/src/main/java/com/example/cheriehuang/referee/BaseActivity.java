@@ -14,9 +14,10 @@ import android.content.Intent;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+
 public abstract class BaseActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    protected  void onCreate(Bundle savedInstanceState)
+    protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
@@ -68,10 +69,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
             case R.id.notifications:
                 Toast.makeText(this, "Notifications selected", Toast.LENGTH_SHORT).show();
+                Intent intent4 = new Intent(this, RestrictedActivity.class);
+                intent4.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent4);
                 return true;
             case R.id.friends:
-                Toast.makeText(this, "Friends selected", Toast.LENGTH_SHORT).show();
-                Intent intent3 = new Intent(this, FriendActivity.class);
+                Toast.makeText(this, "Groups selected", Toast.LENGTH_SHORT).show();
+                Intent intent3 = new Intent(this, GroupActivity.class);
                 startActivity(intent3);
                 return true;
             case R.id.settings:
